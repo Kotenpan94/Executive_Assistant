@@ -37,42 +37,7 @@ Following the original phase plan from `App Summary.docx`:
 
 ## 4. Core entities
 
-```
-Student      { id, name, email, school, createdAt }
-Supporter    { id, name, email, createdAt }
-StudentSupporterLink { studentId, supporterId, status: 'invited'|'active'|'revoked', invitedBy: studentId }
-
-Term         { id, studentId, name, startsAt, endsAt }
-Class        { id, termId, name }
-
-Event        { id, studentId, classId?, title, startsAt, endsAt,
-               source: 'parsed'|'manual', volatility: 'stable'|'variable',
-               templateId?, recurrenceRule? }
-Task         { id, studentId, classId?, title, dueAt, status: 'open'|'done'|'skipped' }
-Assignment   { id, studentId, classId, title, dueAt, grade?, status }
-  -- classId is mandatory only on Assignment; optional on Event/Task
-
-Step         { id, parentType: 'event'|'task'|'assignment', parentId, title,
-               plannedStartsAt, plannedEndsAt, actualCompletedAt?, order, status }
-Routine      { id, studentId, name,
-               template: [{ title, duration, offsetFromAnchor, source: 'default'|'wizard'|'learned' }] }
-
-PlanningSession { id, studentId, weekStartDate, status: 'pending'|'completed'|'skipped', completedAt? }
-Retrospective    { id, studentId, weekStartDate, subjectType: 'event'|'assignment', subjectId,
-                    promptKey, answer: 'yes'|'no'|'somewhat', answeredAt }
-
-CheckIn      { id, studentId, subjectType: 'task'|'assignment'|'step', subjectId,
-               type: 'completion'|'location', value, at, sharedWithSupporters: bool }
-
-Document     { id, studentId, classId?, type: 'syllabus'|'schedule',
-               status: 'pending'|'processing'|'parsed'|'reviewed'|'failed', createdAt }
-  -- no file reference: the upload is deleted when parsing ends
-Reminder     { id, targetType: 'student'|'supporter', targetId,
-               type: 'due'|'initiation'|'missed-followup'|'planning-session', firesAt }
-Notification { id, targetType: 'student'|'supporter', targetId, channel: 'push'|'email' }
-```
-
-**Why Event/Task/Assignment are separate types**: an Event has a start+end time on a date (class meeting, exam). A Task has just a due date. An Assignment has a due date and an optional grade, and is the only one of the three where a Class link is mandatory. Students experience these as one merged calendar (distinguished visually by icon/color), but the underlying types stay distinct.
+Full definitions, relationships and retention live in [`data-model.md`](data-model.md). The one design point worth keeping here: Event, Task and Assignment are separate types, but students experience them as one merged calendar, told apart by icon and color. An Event has a start and end time; a Task has only a due date; an Assignment has a due date and an optional grade, and is the only one where a Class link is mandatory.
 
 ## 5. The two scheduling engines
 

@@ -91,7 +91,7 @@ interface Candidate {
 }
 ```
 
-The server adds, after deterministic processing:
+Entity definitions for `Document`, `ParseJob` and `ExtractedCandidate` are in [`../data-model.md`](../data-model.md). The server adds, after deterministic processing:
 
 ```ts
 interface ExtractedCandidate extends Candidate {

@@ -64,8 +64,9 @@ Retrospective    { id, studentId, weekStartDate, subjectType: 'event'|'assignmen
 CheckIn      { id, studentId, subjectType: 'task'|'assignment'|'step', subjectId,
                type: 'completion'|'location', value, at, sharedWithSupporters: bool }
 
-Document     { id, studentId, classId?, type: 'syllabus'|'schedule', fileUrl,
-               status: 'pending'|'parsed'|'reviewed', createdAt }
+Document     { id, studentId, classId?, type: 'syllabus'|'schedule',
+               status: 'pending'|'processing'|'parsed'|'reviewed'|'failed', createdAt }
+  -- no file reference: the upload is deleted when parsing ends
 Reminder     { id, targetType: 'student'|'supporter', targetId,
                type: 'due'|'initiation'|'missed-followup'|'planning-session', firesAt }
 Notification { id, targetType: 'student'|'supporter', targetId, channel: 'push'|'email' }

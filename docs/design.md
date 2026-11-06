@@ -33,7 +33,7 @@ Following the original phase plan from `App Summary.docx`:
 ## 3. Architecture
 
 - **Client**: Expo Router app (this repo) — iOS/Android/Web from one codebase.
-- **Server** (not yet built): Node + TypeScript, Fastify API, Postgres, S3-compatible object storage for uploaded documents, a job table for the async document-parsing pipeline (no need for Redis/BullMQ at MVP scale), Claude for AI extraction/breakdown, Expo push notifications.
+- **Server** (not yet built): Node + TypeScript, Fastify API, Postgres, transient storage for uploaded documents (deleted when parsing finishes; see `docs/flows/syllabus-extraction.md` §9), a job table for the async document-parsing pipeline (no need for Redis/BullMQ at MVP scale), Claude for AI extraction/breakdown, Expo push notifications.
 
 ## 4. Core entities
 
@@ -93,6 +93,8 @@ The hero screen. Given the current timestamp, resolve whichever `Step` (or atomi
 3. **Review screen — nothing is ever auto-committed.** Each candidate is an editable card (accept/edit/discard). Low-confidence guesses are surfaced rather than hidden, clearly marked uncertain — starting from a flawed draft is easier than an empty form for this population, and the correction itself is useful planning engagement.
 4. For Assignment-type items with a due date more than a few days out, the review card offers "break this into steps?" — accepting triggers the project-breakdown engine inline, so the student leaves review with both a date and a starting plan.
 5. Confirmed items become real `Event`/`Assignment` rows (+ any accepted `Step`s), tied back to the source `Document`.
+
+Full flow model (sequence, states, API, extraction schema, failure modes): [`docs/flows/syllabus-extraction.md`](flows/syllabus-extraction.md).
 
 **Manual entry** (job shifts, team practices, anything not from a syllabus): same "Add Event" screen, supports recurrence (none/daily/weekly/monthly) with an end condition. No new entity — these are `Event` rows with a `recurrenceRule`, virtually expanded at render time if `volatility: 'stable'`. Location is optional but makes the item eligible for a `Routine` the same way a class is.
 
